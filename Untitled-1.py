@@ -105,42 +105,48 @@ def ins_valid(s, i):
             exit()
 
 
-def typeA(s):
+def typeA(s,i):
+    ins_valid(s,i)
     ans = ""
     ans = A[s[0]] + "00" + registers[s[1]] + registers[s[2]] + registers[s[3]]
     f = open("binary.txt", "a")
     f.write(ans + "\n")
 
 
-def typeB(s):
+def typeB(s,i):
+    ins_valid(s,i)
     ans = ""
     ans = B[s[0]] + registers[s[1]] + dtob(s[2][1:])
     f = open("binary.txt", "a")
     f.write(ans + "\n")
 
 
-def typeC(s):
+def typeC(s,i):
+    ins_valid(s,i)
     ans = ""
     ans = C[s[0]] + "0" * 5 + registers[s[1]] + registers[s[2]]
     f = open("binary.txt", "a")
     f.write(ans + "\n")
 
 
-def typeD(s):
+def typeD(s,i):
+    ins_valid(s,i)
     ans = ""
     ans = D[s[0]] + registers[s[1]] + var_list[s[2]][0]
     f = open("binary.txt", "a")
     f.write(ans + "\n")
 
 
-def typeE(s):
+def typeE(s,i):
+    ins_valid(s,i)
     ans = ""
     ans = E[s[0]] + "000" + str(labels[s[1]])    # memadress of label to be added
     f = open("binary.txt", "a")
     f.write(ans + "\n")
 
 
-def typeF(s):
+def typeF(s,i):
+    ins_valid(s,i)
     ans = ""
     ans = F[s[0]] + "0" * 11
     f = open("binary.txt", "a")
@@ -204,21 +210,21 @@ with open("file.txt", "r") as f:
         #variables labels to be handled here
         elif (s[0] == "mov"):
             if ("$" in s[2]):
-                typeB(s)
+                typeB(s,i)
             else:
-                typeC(s)
+                typeC(s,i)
         elif (s[0] in A):
-            typeA(s)
+            typeA(s,i)
         elif (s[0] in B):
-            typeB(s)
+            typeB(s,i)
         elif (s[0] in C):
-            typeC(s)
+            typeC(s,i)
         elif (s[0] in D):
-            typeD(s)
+            typeD(s,i)
         elif (s[0] in E):
-            typeE(s)
+            typeE(s,i)
         elif (s[0] in F):
-            typeF(s)
+            typeF(s,i)
         else:
             errorHandle(i)
         i += 1
