@@ -171,7 +171,7 @@ with open("file.txt", "r") as f:
         elif (":" in i):
             if (len(s)!=1):
                 print("Illegal Use of Labeles")
-            elif (s[:-1] in var_list):
+            elif (s[0][:-1] in var_list):
                 print("Lable name same as variable")
             else:
                 labels[s[0][:-1]]=dtob(line_count-1)
@@ -195,9 +195,12 @@ with open("file.txt", "r") as f:
     for s in l:
         print(s)
         if (s[0]) == "var":
-            pass
+            if s[1] not in var_list:
+                print("INVALID USE OF VARIABLE NOT DECLARED")
         elif (s[0][-1]==":"):
-            pass
+            if s[0][:-1] not in var_list:
+                print("INVALID USE OF LABEL NOT DECLARED")
+            
         #variables labels to be handled here
         elif (s[0] == "mov"):
             if ("$" in s[2]):
