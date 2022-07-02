@@ -52,6 +52,7 @@ E = {
 
 
 def dtob(dec):
+    dec=int(dec)
     s = ""
     while (dec > 0):
         s = (str)(dec % 2) + s
@@ -134,7 +135,7 @@ def typeD(s):
 
 def typeE(s):
     ans = ""
-    ans = E[s[0]] + "000"           # memadress of label to be added
+    ans = E[s[0]] + "000" + str(labels[s[1]])    # memadress of label to be added
     f = open("binary.txt", "a")
     f.write(ans + "\n")
 
@@ -146,21 +147,38 @@ def typeF(s):
     f.write(ans + "\n")
 
 
+variable_flag_check = 0
+
 with open("file.txt", "r") as f:
     l = []
     var_count = 0
     line_count = 0
+    label_count = 0
     for i in f:
         s = i.split()
         l.append(s)
         line_count += 1
 
         if (s[0] == "var"):
-            if (len(var_list) > 2 ** 8):
+            if variable_flag_check == 1:
+                print("VARIABLE DECLARATION NOT AT BEGINING")
+            elif (len(var_list) > 2 ** 8):
                 print("TOO MANY VARIABLES")
             else:
                 var_list[s[1]] = ["0", 0]  # [address,value] of variable
                 var_count += 1
+
+        elif (":" in i):
+            if (len(s)!=1):
+                print("Illegal Use of Labeles")
+            elif (s[:-1] in var_list):
+                print("Lable name same as variable")
+            else:
+                labels[s[0][:-1]]=dtob(line_count-1)
+                label_count += 1
+
+        else:
+            variable_flag_check=1
 
     curr_address = line_count - var_count
     for i in var_list:
@@ -172,11 +190,16 @@ with open("file.txt", "r") as f:
         curr_address += 1
 
     i = 1
+    if (l[-1][0]!="hlt"):
+        print("hlt not used")
     for s in l:
-
+        print(s)
+        if (s[0]) == "var":
+            pass
+        elif (s[0][-1]==":"):
+            pass
         #variables labels to be handled here
-
-        if (s[0] == "mov"):
+        elif (s[0] == "mov"):
             if ("$" in s[2]):
                 typeB(s)
             else:
