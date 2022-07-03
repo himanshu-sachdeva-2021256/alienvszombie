@@ -1,3 +1,5 @@
+import sys
+
 r0 = r1 = r2 = r3 = r4 = r5 = r6 = flag = 0
 var_list = {}
 labels = {}
@@ -155,6 +157,14 @@ def typeF(s,i):
 
 variable_flag_check = 0
 
+with open("file.txt","w") as f:
+    while True:
+        k = sys.stdin.readline()
+        f.write(k)
+        # print(k)
+        if k.strip() == "hlt":
+            break
+
 with open("file.txt", "r") as f:
     g=open("binary.txt","w")
     g.close()
@@ -209,7 +219,7 @@ with open("file.txt", "r") as f:
     if (l[-1][0]!="hlt"):
         print("hlt not used")
     for s in l:
-        print(s)
+        # print(s)
         if (s[0]) == "var":
             if s[1] not in var_list:
                 print("INVALID USE OF VARIABLE NOT DECLARED")
@@ -238,3 +248,8 @@ with open("file.txt", "r") as f:
         else:
             errorHandle(i)
         i += 1
+
+
+with open("binary.txt","r") as f:
+    k=f.read()
+    sys.stdout.write(k)
