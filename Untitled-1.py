@@ -177,14 +177,22 @@ with open("file.txt", "r") as f:
                 var_count += 1
 
         elif (":" in i):
-            if (len(s)!=1):
-                print("Illegal Use of Labeles")
-            elif (s[0][:-1] in var_list):
+            # if (len(s)!=1):
+            #     print("Illegal Use of Labeles")
+            if (s[0][:-1] in var_list):
                 print("Lable name same as variable")
             else:
                 labels[s[0][:-1]]=dtob(line_count-1)
                 label_count += 1
+                l.pop()
+                l.append(s[1:])
 
+        elif ("FLAGS" in i):
+            if s[0]!="mov":
+                print("Illegal use of flag")
+            elif len(s)!=3:
+                print("Illegal use of flag")
+            
         else:
             variable_flag_check=1
 
