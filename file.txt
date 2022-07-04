@@ -1,10 +1,2 @@
-var abc
-var cde
-var xyz
-add R0 R1 R2
-add R0 R1 R2
-label3: add R0 R1 R2
-add R0 R1 R2
-add R0 R1 R2
-add R0 R1 R2
+mov r1 r2
 hlt

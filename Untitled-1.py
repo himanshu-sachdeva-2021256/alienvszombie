@@ -158,12 +158,19 @@ def typeF(s,i):
 variable_flag_check = 0
 
 with open("file.txt","w") as f:
-    while True:
-        k = sys.stdin.readline()
-        f.write(k)
-        # print(k)
-        if k.strip() == "hlt":
-            break
+    # while True:
+    #     try:
+    #         k = sys.stdin.readline()
+    #         f.write(k)
+    #         # print(k)
+    #         # if k.strip() == "hlt":
+    #         #     break
+    #     except EOFError as e:
+    #         break
+    #         print(e)
+    #         exit()
+    for l in sys.stdin:
+        f.write(l)
 
 with open("file.txt", "r") as f:
     g=open("binary.txt","w")
