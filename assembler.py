@@ -16,40 +16,40 @@ registers = {
 }
 
 A = {
-    "add": "10000",
-    "sub": "10001",
-    "mul": "10110",
-    "xor": "11010",
-    "or": "11011",
-    "and": "11100"
+    "add": "00000",
+    "sub": "00001",
+    "mul": "00110",
+    "xor": "01010",
+    "or": "01011",
+    "and": "01100"
 }
 B = {
-    "mov": "10010",
-    "ls": "11001",
-    "rs": "11000"
+    "mov": "00010",
+    "ls": "01001",
+    "rs": "01000"
 
 }
 F = {
-    "hlt": "01010"
+    "hlt": "10011"
 }
 
 C = {
-    "mov": "10011",
-    "div": "10111",
-    "not": "11101",
-    "cmp": "11110"
+    "mov": "00011",
+    "div": "00111",
+    "not": "01101",
+    "cmp": "01110"
 }
 
 D = {
-    "ld": "10100",
-    "st": "10101",
+    "ld": "00100",
+    "st": "00101",
 }
 
 E = {
-    "jmp": "11111",
-    "jlt": "01100",
-    "jgt": "01101",
-    "je": "01111",
+    "jmp": "01111",
+    "jlt": "1000",
+    "jgt": "10001",
+    "je": "10010",
 }
 
 
@@ -83,35 +83,35 @@ def ins_valid(s, i):
         if (s[1] not in registers):
             print(f"INVALID REGISTER NAME USED IN LINE {i}")
             exit()
-        if (int(s[2][1:]) > 127):
+        if (int(s[2][1:]) > 127 or int(s[2][1:])<0):
             print(f"VALUE OF IMMEDIATE EXCEEDS THE LIMIT(MORE THAN 8 BITS) AT LINE {i}")
             exit()
-    if(s[0]=="mov" and s[2] in registers):
+    elif(s[0]=="mov" and s[2] in registers):
         if (s[1] not in registers or s[2] not in registers):
             print(f"INVALID REGISTER NAME USED IN LINE {i}")
             exit()
-    if (s[0] in B):
+    elif (s[0] in B):
         if (s[1] not in registers):
             print(f"INVALID REGISTER NAME USED IN LINE {i}")
             exit()
         if ("$" not in s[2]):
             print(f"INVALID INSTRUCTION AT LINE {i}")
             exit()
-        if (int(s[2][1:]) > 127):
+        if (int(s[2][1:]) > 127 or int(s[2][1:])<0):
             print(f"VALUE OF IMMEDIATE EXCEEDS THE LIMIT(MORE THAN 8 BITS) AT LINE {i}")
             exit()
-    if (s[0] in C):
+    elif (s[0] in C):
         if (s[1] not in registers or s[2] not in registers):
             print(f"INVALID REGISTER NAME USED IN LINE {i}")
             exit()
-    if (s[0] in D):
+    elif (s[0] in D):
         if (s[1] not in registers):
             print(f"INVALID REGISTER NAME USED IN LINE {i}")
             exit()
         if (s[2] not in var_list):
             print(f"INVALID MEMORY ADDRESS AT LINE {i}")
             exit()
-    if (s[0] in E):
+    elif (s[0] in E):
         if (s[1] not in var_list):
             print(f"INVALID MEMORY ADDRESS AT LINE {i}")
             exit()
@@ -182,6 +182,38 @@ with open("file.txt","w") as f:
     for l in sys.stdin:
         f.write(l)
 
+# with open("file.txt", "r") as f:
+#     var_count = 0
+#     line_count = 0
+#     label_count = 0
+#     l=[]
+#     for i in f:
+#         if i== '\n':
+#             continue
+#         s = i.split()
+#         l.append(s)
+#         line_count += 1
+
+#         if (s[0] == "var"):
+#             if variable_flag_check == 1:
+#                 print("VARIABLE DECLARATION NOT AT BEGINING")
+#             elif (len(var_list) > 2 ** 8):
+#                 print("TOO MANY VARIABLES")
+#             else:
+#                 var_list[s[1]] = ["0", 0]  # [address,value] of variable
+#                 var_count += 1
+
+#         elif (":" in i):
+#             # if (len(s)!=1):
+#             #     print("Illegal Use of Labeles")
+#             if (s[0][:-1] in var_list):
+#                 print("Lable name same as variable")
+#             else:
+#                 labels[s[0][:-1]]=dtob(line_count-1)
+#                 label_count += 1
+#                 l.pop()
+#                 l.append(s[1:])    
+
 with open("file.txt", "r") as f:
     g=open("binary.txt","w")
     g.close()
@@ -190,6 +222,8 @@ with open("file.txt", "r") as f:
     line_count = 0
     label_count = 0
     for i in f:
+        if i== '\n':
+            continue
         s = i.split()
         l.append(s)
         line_count += 1
@@ -214,10 +248,12 @@ with open("file.txt", "r") as f:
                 l.pop()
                 l.append(s[1:])
 
-        elif ("FLAGS" in i):
+        if ("FLAGS" in i):
             if s[0]!="mov":
                 print("Illegal use of flag")
             elif len(s)!=3:
+                print("Illegal use of flag")
+            elif s[1]!="FLAGS" or s[2] not in registers:
                 print("Illegal use of flag")
             
         else:
@@ -265,7 +301,6 @@ with open("file.txt", "r") as f:
         else:
             errorHandle(i)
         i += 1
-
 
 with open("binary.txt","r") as f:
     k=f.read()
