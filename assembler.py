@@ -79,7 +79,17 @@ def ins_valid(s, i):
             exit()
 
     #length of instruction to be checked for all the below instruction types
-
+    if(s[0]=="mov" and s[2][0]=="$"):
+        if (s[1] not in registers):
+            print(f"INVALID REGISTER NAME USED IN LINE {i}")
+            exit()
+        if (int(s[2][1:]) > 127):
+            print(f"VALUE OF IMMEDIATE EXCEEDS THE LIMIT(MORE THAN 8 BITS) AT LINE {i}")
+            exit()
+    if(s[0]=="mov" and s[2] in registers):
+        if (s[1] not in registers or s[2] not in registers):
+            print(f"INVALID REGISTER NAME USED IN LINE {i}")
+            exit()
     if (s[0] in B):
         if (s[1] not in registers):
             print(f"INVALID REGISTER NAME USED IN LINE {i}")
