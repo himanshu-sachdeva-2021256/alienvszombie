@@ -83,7 +83,7 @@ def ins_valid(s, i):
         if (s[1] not in registers):
             print(f"INVALID REGISTER NAME USED IN LINE {i}")
             exit()
-        if (int(s[2][1:]) > 127 or int(s[2][1:])<0):
+        if (int(s[2][1:]) > 255 or int(s[2][1:])<0):
             print(f"VALUE OF IMMEDIATE EXCEEDS THE LIMIT(MORE THAN 8 BITS) AT LINE {i}")
             exit()
     elif(s[0]=="mov" and s[2] in registers):
@@ -97,7 +97,7 @@ def ins_valid(s, i):
         if ("$" not in s[2]):
             print(f"INVALID INSTRUCTION AT LINE {i}")
             exit()
-        if (int(s[2][1:]) > 127 or int(s[2][1:])<0):
+        if (int(s[2][1:]) > 255 or int(s[2][1:])<0):
             print(f"VALUE OF IMMEDIATE EXCEEDS THE LIMIT(MORE THAN 8 BITS) AT LINE {i}")
             exit()
     elif (s[0] in C):
@@ -209,7 +209,7 @@ with open("file.txt", "r") as f:
             if (s[0][:-1] in var_list):
                 print("Lable name same as variable")
             else:
-                labels[s[0][:-1]]=dtob(line_count-1)
+                labels[s[0][:-1]]=dtob(line_count-1-len(var_list))
                 label_count += 1
                 l.pop()
                 l.append(s[1:])    
@@ -253,7 +253,7 @@ with open("file.txt", "r") as f:
                 print("Illegal use of flag")
             elif len(s)!=3:
                 print("Illegal use of flag")
-            elif s[1]!="FLAGS" or s[2] not in registers:
+            elif s[2]!="FLAGS" or s[1] not in registers:
                 print("Illegal use of flag")
             
         else:
