@@ -47,7 +47,7 @@ D = {
 
 E = {
     "jmp": "01111",
-    "jlt": "1000",
+    "jlt": "10000",
     "jgt": "10001",
     "je": "10010",
 }
@@ -112,7 +112,7 @@ def ins_valid(s, i):
             print(f"INVALID MEMORY ADDRESS AT LINE {i}")
             exit()
     elif (s[0] in E):
-        if (s[1] not in var_list):
+        if (s[1] not in labels):
             print(f"INVALID MEMORY ADDRESS AT LINE {i}")
             exit()
 
@@ -182,45 +182,11 @@ with open("file.txt","w") as f:
     for l in sys.stdin:
         f.write(l)
 
-# with open("file.txt", "r") as f:
-#     var_count = 0
-#     line_count = 0
-#     label_count = 0
-#     l=[]
-#     for i in f:
-#         if i== '\n':
-#             continue
-#         s = i.split()
-#         l.append(s)
-#         line_count += 1
-
-#         if (s[0] == "var"):
-#             if variable_flag_check == 1:
-#                 print("VARIABLE DECLARATION NOT AT BEGINING")
-#             elif (len(var_list) > 2 ** 8):
-#                 print("TOO MANY VARIABLES")
-#             else:
-#                 var_list[s[1]] = ["0", 0]  # [address,value] of variable
-#                 var_count += 1
-
-#         elif (":" in i):
-#             # if (len(s)!=1):
-#             #     print("Illegal Use of Labeles")
-#             if (s[0][:-1] in var_list):
-#                 print("Lable name same as variable")
-#             else:
-#                 labels[s[0][:-1]]=dtob(line_count-1)
-#                 label_count += 1
-#                 l.pop()
-#                 l.append(s[1:])    
-
 with open("file.txt", "r") as f:
-    g=open("binary.txt","w")
-    g.close()
-    l = []
     var_count = 0
     line_count = 0
     label_count = 0
+    l=[]
     for i in f:
         if i== '\n':
             continue
@@ -246,7 +212,41 @@ with open("file.txt", "r") as f:
                 labels[s[0][:-1]]=dtob(line_count-1)
                 label_count += 1
                 l.pop()
-                l.append(s[1:])
+                l.append(s[1:])    
+
+with open("file.txt", "r") as f:
+    g=open("binary.txt","w")
+    g.close()
+    # l = []
+    # var_count = 0
+    # line_count = 0
+    # label_count = 0
+    for i in f:
+        if i== '\n':
+            continue
+        s = i.split()
+        # l.append(s)
+        # line_count += 1
+
+        # if (s[0] == "var"):
+        #     if variable_flag_check == 1:
+        #         print("VARIABLE DECLARATION NOT AT BEGINING")
+        #     elif (len(var_list) > 2 ** 8):
+        #         print("TOO MANY VARIABLES")
+        #     else:
+        #         var_list[s[1]] = ["0", 0]  # [address,value] of variable
+        #         var_count += 1
+
+        # elif (":" in i):
+        #     # if (len(s)!=1):
+        #     #     print("Illegal Use of Labeles")
+        #     if (s[0][:-1] in var_list):
+        #         print("Lable name same as variable")
+        #     else:
+        #         labels[s[0][:-1]]=dtob(line_count-1)
+        #         label_count += 1
+        #         l.pop()
+        #         l.append(s[1:])
 
         if ("FLAGS" in i):
             if s[0]!="mov":
