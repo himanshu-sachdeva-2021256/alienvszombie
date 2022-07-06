@@ -3,6 +3,7 @@ import sys
 r0 = r1 = r2 = r3 = r4 = r5 = r6 = flag = 0
 var_list = {}
 labels = {}
+hlt_flag=0
 
 registers = {
     "R0": "000",
@@ -80,31 +81,51 @@ def ins_valid(s, i):
 
     #length of instruction to be checked for all the below instruction types
     if(s[0]=="mov" and s[2][0]=="$"):
+        if (len(s) != 3):
+            print(f"INVALID INSTRUCTION AT LINE {i}")
+            exit()        
         if (s[1] not in registers):
             print(f"INVALID REGISTER NAME USED IN LINE {i}")
             exit()
-        if (int(s[2][1:]) > 127 or int(s[2][1:])<0):
+        if not((s[2][1:]).isnumeric()):
+            print(f"Interger not used")
+            exit()
+        if (int(s[2][1:]) > 255 or int(s[2][1:])<0):
             print(f"VALUE OF IMMEDIATE EXCEEDS THE LIMIT(MORE THAN 8 BITS) AT LINE {i}")
             exit()
     elif(s[0]=="mov" and s[2] in registers):
+        if (len(s) != 3):
+            print(f"INVALID INSTRUCTION AT LINE {i}")
+            exit()
         if (s[1] not in registers or s[2] not in registers):
             print(f"INVALID REGISTER NAME USED IN LINE {i}")
             exit()
     elif (s[0] in B):
+        if (len(s) != 3):
+            print(f"INVALID INSTRUCTION AT LINE {i}")
+            exit()        
         if (s[1] not in registers):
             print(f"INVALID REGISTER NAME USED IN LINE {i}")
             exit()
         if ("$" not in s[2]):
             print(f"INVALID INSTRUCTION AT LINE {i}")
             exit()
-        if (int(s[2][1:]) > 127 or int(s[2][1:])<0):
+        if (int(s[2][1:]) > 255 or int(s[2][1:])<0):
             print(f"VALUE OF IMMEDIATE EXCEEDS THE LIMIT(MORE THAN 8 BITS) AT LINE {i}")
             exit()
     elif (s[0] in C):
+        if (len(s) != 3):
+            print(f"INVALID INSTRUCTION AT LINE {i}")
+            exit()        
+
         if (s[1] not in registers or s[2] not in registers):
             print(f"INVALID REGISTER NAME USED IN LINE {i}")
             exit()
     elif (s[0] in D):
+        if (len(s) != 3):
+            print(f"INVALID INSTRUCTION AT LINE {i}")
+            exit()        
+
         if (s[1] not in registers):
             print(f"INVALID REGISTER NAME USED IN LINE {i}")
             exit()
@@ -112,6 +133,10 @@ def ins_valid(s, i):
             print(f"INVALID MEMORY ADDRESS AT LINE {i}")
             exit()
     elif (s[0] in E):
+        if (len(s) != 2):
+            print(f"INVALID INSTRUCTION AT LINE {i}")
+            exit()        
+
         if (s[1] not in labels):
             print(f"INVALID MEMORY ADDRESS AT LINE {i}")
             exit()
@@ -182,6 +207,7 @@ with open("file.txt","w") as f:
     for l in sys.stdin:
         f.write(l)
 
+
 with open("file.txt", "r") as f:
     var_count = 0
     line_count = 0
@@ -195,10 +221,15 @@ with open("file.txt", "r") as f:
         line_count += 1
 
         if (s[0] == "var"):
+            if len(s)!=2:
+                print("wrong instruction")
+                exit()
             if variable_flag_check == 1:
                 print("VARIABLE DECLARATION NOT AT BEGINING")
+                exit()
             elif (len(var_list) > 2 ** 8):
                 print("TOO MANY VARIABLES")
+                exit()
             else:
                 var_list[s[1]] = ["0", 0]  # [address,value] of variable
                 var_count += 1
@@ -209,11 +240,12 @@ with open("file.txt", "r") as f:
             if (s[0][:-1] in var_list):
                 print("Lable name same as variable")
             else:
-                labels[s[0][:-1]]=dtob(line_count-1)
+                labels[s[0][:-1]]=dtob(line_count-len(var_list)-1)
                 label_count += 1
                 l.pop()
                 l.append(s[1:])    
-
+            
+        
 with open("file.txt", "r") as f:
     g=open("binary.txt","w")
     g.close()
@@ -251,10 +283,13 @@ with open("file.txt", "r") as f:
         if ("FLAGS" in i):
             if s[0]!="mov":
                 print("Illegal use of flag")
+                exit()
             elif len(s)!=3:
                 print("Illegal use of flag")
-            elif s[1]!="FLAGS" or s[2] not in registers:
+                exit()
+            elif s[2]!="FLAGS" or s[1] not in registers:
                 print("Illegal use of flag")
+                exit()
             
         else:
             variable_flag_check=1
@@ -271,14 +306,20 @@ with open("file.txt", "r") as f:
     i = 1
     if (l[-1][0]!="hlt"):
         print("hlt not used")
+        exit()
+    if (l.count(["hlt"])>1):
+        print("Hlt used many times")
+        exit()
     for s in l:
         # print(s)
         if (s[0]) == "var":
             if s[1] not in var_list:
                 print("INVALID USE OF VARIABLE NOT DECLARED")
+                exit()
         elif (s[0][-1]==":"):
             if s[0][:-1] not in var_list:
                 print("INVALID USE OF LABEL NOT DECLARED")
+                exit()
             
         #variables labels to be handled here
         elif (s[0] == "mov"):
