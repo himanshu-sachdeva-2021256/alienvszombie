@@ -305,3 +305,4 @@ with open("file.txt", "r") as f:
 with open("binary.txt","r") as f:
     k=f.read()
     sys.stdout.write(k)
+#hi
