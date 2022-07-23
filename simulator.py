@@ -47,7 +47,8 @@ def and1(inst):
 def movr(inst):
     registers[inst[14:]]=registers[inst[10:14]]
 def div(inst):
-    registers["000"]=registers[inst[10:14]]/registers[inst[14:]]
+    registers["000"]=int(registers[inst[10:14]])/int(registers[inst[14:]])
+    registers["001"]=int(registers[inst[10:14]])%int(registers[inst[14:]])
 def not1(inst):
     registers[inst[14:]]=~registers[inst[10:14]]
 def cmp(inst):
