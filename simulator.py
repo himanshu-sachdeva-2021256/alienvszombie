@@ -1,16 +1,45 @@
 R0 = R1 = R2 = R3 = R4 = R5 = R6 = FLAGS = "0000000000000000"
 
 registers = {
-    "000": "R0",
-    "001": "R1",
-    "010": "R2",
-    "011": "R3",
-    "100": "R4",
-    "101": "R5",
-    "110": "R6",
-    "111": "FLAGS"
+    "000": R0,
+    "001": R1,
+    "010": R2,
+    "011": R3,
+    "100": R4,
+    "101": R5,
+    "110": R6,
+    "111": FLAGS
 }
+def binToDec(binary):
+    decimal=i = 0
+    while(binary != 0):
+        dec = binary % 10
+        decimal = decimal + dec * (2**i)
+        binary = binary//10
+        i += 1
+    return decimal
 
+def add(inst):
+    registers[inst[7:10]]=registers[inst[10:14]]+registers[inst[14:]]
+    if binToDec(int(registers[inst[7:10]]))>255:
+        registers[inst[7:10]]="11111111"
+def sub(inst):
+    registers[inst[7:10]]=registers[inst[10:14]]-registers[inst[14:]]
+    if binToDec(int(registers[inst[7:10]]))<0:
+        registers[inst[7:10]]="0"
+def mul(inst):
+    registers[inst[7:10]]=registers[inst[10:14]]*registers[inst[14:]]
+    if binToDec(int(registers[inst[7:10]]))>255:
+        registers[inst[7:10]]="11111111"
+    if binToDec(int(registers[inst[7:10]]))<0:
+        registers[inst[7:10]]="0"
+        
+def xor(inst):
+    registers[inst[7:10]]=registers[inst[10:14]]^registers[inst[14:]]
+def or1(inst):
+    registers[inst[7:10]]=registers[inst[10:14]] or registers[inst[14:]]
+def and1(inst):
+    registers[inst[7:10]]=registers[inst[10:14]] and registers[inst[14:]]
 A = {
     "00000": add,
     "00001": sub,
@@ -50,9 +79,8 @@ E = {
 }
 #VALUES IN THE DICTIONARIES ARE THE FUNCTIONS. USE DICT[KEY] TO CALL THE FUNCTION
 
-
-
 def typeA(inst):
+    A[inst[:5]](inst)
 
 def typeB(inst):
 
