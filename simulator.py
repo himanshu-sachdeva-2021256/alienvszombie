@@ -22,35 +22,52 @@ def binToDec(binary):
 def add(inst):
     registers[inst[7:10]]=registers[inst[10:14]]+registers[inst[14:]]
     if binToDec(int(registers[inst[7:10]]))>255:
+        registers["111"]="0000000000001000"
         registers[inst[7:10]]="11111111"
 def sub(inst):
     registers[inst[7:10]]=registers[inst[10:14]]-registers[inst[14:]]
     if binToDec(int(registers[inst[7:10]]))<0:
+        registers["111"]="0000000000001000"
         registers[inst[7:10]]="0"
 def mul(inst):
     registers[inst[7:10]]=registers[inst[10:14]]*registers[inst[14:]]
     if binToDec(int(registers[inst[7:10]]))>255:
+        registers["111"]="0000000000001000"
         registers[inst[7:10]]="11111111"
     if binToDec(int(registers[inst[7:10]]))<0:
+        registers["111"]="0000000000001000"
         registers[inst[7:10]]="0"
         
 def xor(inst):
     registers[inst[7:10]]=registers[inst[10:14]]^registers[inst[14:]]
 def or1(inst):
-    registers[inst[7:10]]=registers[inst[10:14]] or registers[inst[14:]]
+    registers[inst[7:10]]=registers[inst[10:14]] | registers[inst[14:]]
 def and1(inst):
-    registers[inst[7:10]]=registers[inst[10:14]] and registers[inst[14:]]
+    registers[inst[7:10]]=registers[inst[10:14]] & registers[inst[14:]]
+def movr(inst):
+    registers[inst[14:]]=registers[inst[10:14]]
+def div(inst):
+    registers["000"]=registers[inst[10:14]]/registers[inst[14:]]
+def not1(inst):
+    registers[inst[14:]]=~registers[inst[10:14]]
+def cmp(inst):
+    if(registers[inst[10:14]]>registers[inst[14:]]):
+        registers["111"]="0000000000000010"
+    elif(registers[inst[10:14]]==registers[inst[14:]]):
+        registers["111"]="0000000000000001"
+    elif(registers[inst[10:14]]<registers[inst[14:]]):
+        registers["111"]="0000000000000100"
 A = {
     "00000": add,
     "00001": sub,
     "00110": mul,
     "01010": xor,
-    "01011": or,
-    "01100": and,
+    "01011": or1,
+    "01100": and1,
 }
 
 B = {
-    "00010":mov,
+    "00010":movi,
     "01001":ls ,
     "01000":rs
 
@@ -60,9 +77,9 @@ F = {
 }
 
 C = {
-    "00011":mov,
+    "00011":movr,
     "00111":div,
-    "01101":not,
+    "01101":not1,
     "01110":cmp
 }
 
@@ -79,30 +96,30 @@ E = {
 }
 #VALUES IN THE DICTIONARIES ARE THE FUNCTIONS. USE DICT[KEY] TO CALL THE FUNCTION
 
-def typeA(inst):
-    A[inst[:5]](inst)
+# def typeA(inst):
+#     A[inst[:5]](inst)
 
-def typeB(inst):
+# def typeB(inst):
 
-def typeC(inst):
+# def typeC(inst):
 
-def typeD(inst):
+# def typeD(inst):
 
-def typeE(inst):
+# def typeE(inst):
 
-def typeF(inst):
+# def typeF(inst):
 
-#interpret the registers and the immediate values in each type of instruction above
+# #interpret the registers and the immediate values in each type of instruction above
 
 
 
 def execute(inst):
     if(inst[:5] in A):
-        typeA(inst)
+        A[inst[:5]](inst)
     if (inst[:5] in B):
         typeB(inst)
     if (inst[:5] in C):
-        typeC(inst)
+        C[inst[:5]](inst)
     if (inst[:5] in D):
         typeD(inst)
     if (inst[:5] in E):
