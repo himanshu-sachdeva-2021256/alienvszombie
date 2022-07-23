@@ -19,6 +19,17 @@ def binToDec(binary):
         i += 1
     return decimal
 
+def dtob(dec):
+    dec=int(dec)
+    s = ""
+    while (dec > 0):
+        s = (str)(dec % 2) + s
+        dec = dec // 2
+    if (len(s) < 16):
+        s = (16 - len(s)) * "0" + s
+    return s
+
+
 def add(inst):
     registers[inst[7:10]]=registers[inst[10:14]]+registers[inst[14:]]
     if binToDec(int(registers[inst[7:10]]))>255:
