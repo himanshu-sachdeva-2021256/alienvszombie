@@ -36,49 +36,61 @@ def add(inst):
     registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:14]])) + binToDec(int(registers[inst[14:]])))
     if binToDec(int(registers[inst[7:10]])) > 65535:
         registers["111"] = "0000000000001000"
-        registers[inst[7:10]] = "11111111"
+        registers[inst[7:10]] = "1"*16
+    else:
+        registers["111"] = "0"*16
 
 
 def sub(inst):
     registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:14]])) - binToDec(int(registers[inst[14:]])))
     if binToDec(int(registers[inst[7:10]])) < 0:
         registers["111"] = "0000000000001000"
-        registers[inst[7:10]] = "0"
+        registers[inst[7:10]] = "0"*16
+    else:
+        registers["111"] = "0"*16
 
 
 def mul(inst):
     registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:14]])) * binToDec(int(registers[inst[14:]])))
     if binToDec(int(registers[inst[7:10]])) > 65535:
         registers["111"] = "0000000000001000"
-        registers[inst[7:10]] = "11111111"
+        registers[inst[7:10]] = "1"*16
     elif binToDec(int(registers[inst[7:10]])) < 0:
         registers["111"] = "0000000000001000"
-        registers[inst[7:10]] = "0"
+        registers[inst[7:10]] = "0"*16
+    else:
+        registers["111"] = "0"*16
 
 
 def xor(inst):
     registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:14]])) ^ binToDec(int(registers[inst[14:]])))
+    registers["111"] = "0"*16
 
 
 def or1(inst):
     registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:14]])) | binToDec(int(registers[inst[14:]])))
+    registers["111"] = "0"*16
 
 
 def and1(inst):
     registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:14]])) & binToDec(int(registers[inst[14:]])))
+    registers["111"] = "0"*16
 
 
 def movr(inst):
     registers[inst[14:]] = registers[inst[10:14]]
+    registers["111"] = "0"*16
 
 
 def div(inst):
     registers["000"] = dtob(binToDec(int(registers[inst[10:14]])) // binToDec(int(registers[inst[14:]])))
     registers["001"] = dtob(binToDec(int(registers[inst[10:14]])) % binToDec(int(registers[inst[14:]])))
+    registers["111"] = "0"*16
 
 
 def not1(inst):
     registers[inst[14:]] = dtob(~binToDec(int(registers[inst[10:14]])))
+    registers["111"] = "0"*16
 
 
 def cmp(inst):
@@ -87,52 +99,61 @@ def cmp(inst):
     elif ((binToDec(int(registers[inst[10:14]]))) == binToDec(int(registers[inst[14:]]))):
         registers["111"] = "0000000000000001"
     elif ((binToDec(int(registers[inst[10:14]]))) < binToDec(int(registers[inst[14:]]))):
-        registers["111"] = "0000000000000100"
+        registers["111"] = "0" * 16
 
 
 def movi(inst):
     registers[inst[5:8]] = dtob(binToDec(inst[8:]))
+    registers["111"] = "0" * 16
 
 
 def ls(inst):
-    registers["111"] = "0000000000000000"
+    registers["111"] = "0" * 16
     registers[inst[5:8]] = dtob(2 * binToDec(inst[8:]))
 
 
 def rs(inst):
-    registers["111"] = "0000000000000000"
+    registers["111"] = "0" * 16
     registers[inst[5:8]] = dtob(binToDec(inst[8:]) // 2)
 
 
 def ld(inst):
-    registers["111"] = "0000000000000000"  #flag reset
+    registers["111"] = "0" * 16
 
 
 def st(inst):
-    registers["111"] = "0000000000000000"
+    registers["111"] = "0" * 16
 
 
 def jmp(inst):
+    global PC
     PC = binToDec(inst[8:])
-    registers["111"] = "0000000000000000"
+    registers["111"] = "0" * 16
 
 
 def jgt(inst):
+    global PC
     if (FLAGS[14] == 1):
         PC = binToDec(inst[8:])
-    registers["111"] = "0000000000000000"
+    registers["111"] = "0" * 16
 
 
 def jlt(inst):
+    global PC
     if (FLAGS[13] == 1):
         PC = binToDec(inst[8:])
-    registers["111"] = "0000000000000000"
+    registers["111"] = "0" * 16
 
 
 def je(inst):
+    global PC
     if (FLAGS[15] == 1):
         PC = binToDec(inst[8:])
-    registers["111"] = "0000000000000000"
+    registers["111"] = "0" * 16
+
+
+def hlt():
+    pass
 
 
 A = {
