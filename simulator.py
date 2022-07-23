@@ -20,7 +20,6 @@ def binToDec(binary):
     return decimal
 
 def dtob(dec):
-    dec=int(dec)
     s = ""
     while (dec > 0):
         s = (str)(dec % 2) + s
@@ -29,19 +28,18 @@ def dtob(dec):
         s = (16 - len(s)) * "0" + s
     return s
 
-
 def add(inst):
-    registers[inst[7:10]]=registers[inst[10:14]]+registers[inst[14:]]
+    registers[inst[7:10]]=dtob(binToDec(int(registers[inst[10:14]]))+binToDec(int(registers[inst[14:]])))
     if binToDec(int(registers[inst[7:10]]))>255:
         registers["111"]="0000000000001000"
         registers[inst[7:10]]="11111111"
 def sub(inst):
-    registers[inst[7:10]]=registers[inst[10:14]]-registers[inst[14:]]
+    registers[inst[7:10]]=dtob(binToDec(int(registers[inst[10:14]]))-binToDec(int(registers[inst[14:]])))
     if binToDec(int(registers[inst[7:10]]))<0:
         registers["111"]="0000000000001000"
         registers[inst[7:10]]="0"
 def mul(inst):
-    registers[inst[7:10]]=registers[inst[10:14]]*registers[inst[14:]]
+    registers[inst[7:10]]=dtob(binToDec(int(registers[inst[10:14]]))*binToDec(int(registers[inst[14:]])))
     if binToDec(int(registers[inst[7:10]]))>255:
         registers["111"]="0000000000001000"
         registers[inst[7:10]]="11111111"
@@ -50,24 +48,24 @@ def mul(inst):
         registers[inst[7:10]]="0"
         
 def xor(inst):
-    registers[inst[7:10]]=registers[inst[10:14]]^registers[inst[14:]]
+    registers[inst[7:10]]=dtob(binToDec(int(registers[inst[10:14]]))^binToDec(int(registers[inst[14:]])))
 def or1(inst):
-    registers[inst[7:10]]=registers[inst[10:14]] | registers[inst[14:]]
+    registers[inst[7:10]]=dtob(binToDec(int(registers[inst[10:14]]))|binToDec(int(registers[inst[14:]])))
 def and1(inst):
-    registers[inst[7:10]]=registers[inst[10:14]] & registers[inst[14:]]
+    registers[inst[7:10]]=dtob(binToDec(int(registers[inst[10:14]]))&binToDec(int(registers[inst[14:]])))
 def movr(inst):
     registers[inst[14:]]=registers[inst[10:14]]
 def div(inst):
-    registers["000"]=int(registers[inst[10:14]])/int(registers[inst[14:]])
-    registers["001"]=int(registers[inst[10:14]])%int(registers[inst[14:]])
+    registers["000"]=dtob(binToDec(int(registers[inst[10:14]]))//binToDec(int(registers[inst[14:]])))
+    registers["001"]=dtob(binToDec(int(registers[inst[10:14]]))%binToDec(int(registers[inst[14:]])))
 def not1(inst):
-    registers[inst[14:]]=~registers[inst[10:14]]
+    registers[inst[14:]]=dtob(~binToDec(int(registers[inst[10:14]])))
 def cmp(inst):
-    if(registers[inst[10:14]]>registers[inst[14:]]):
+    if((binToDec(int(registers[inst[10:14]])))>binToDec(int(registers[inst[14:]]))):
         registers["111"]="0000000000000010"
-    elif(registers[inst[10:14]]==registers[inst[14:]]):
+    elif((binToDec(int(registers[inst[10:14]])))==binToDec(int(registers[inst[14:]]))):
         registers["111"]="0000000000000001"
-    elif(registers[inst[10:14]]<registers[inst[14:]]):
+    elif((binToDec(int(registers[inst[10:14]])))<binToDec(int(registers[inst[14:]]))):
         registers["111"]="0000000000000100"
 A = {
     "00000": add,
