@@ -1,5 +1,5 @@
 R0 = R1 = R2 = R3 = R4 = R5 = R6 = FLAGS = "0000000000000000"
-
+PC = 0
 registers = {
     "000": R0,
     "001": R1,
@@ -10,14 +10,17 @@ registers = {
     "110": R6,
     "111": FLAGS
 }
+
+
 def binToDec(binary):
-    decimal=i = 0
-    while(binary != 0):
+    decimal = i = 0
+    while (binary != 0):
         dec = binary % 10
-        decimal = decimal + dec * (2**i)
-        binary = binary//10
+        decimal = decimal + dec * (2 ** i)
+        binary = binary // 10
         i += 1
     return decimal
+
 
 def dtob(dec):
     s = ""
@@ -28,45 +31,110 @@ def dtob(dec):
         s = (16 - len(s)) * "0" + s
     return s
 
+
 def add(inst):
-    registers[inst[7:10]]=dtob(binToDec(int(registers[inst[10:14]]))+binToDec(int(registers[inst[14:]])))
-    if binToDec(int(registers[inst[7:10]]))>255:
-        registers["111"]="0000000000001000"
-        registers[inst[7:10]]="11111111"
+    registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:14]])) + binToDec(int(registers[inst[14:]])))
+    if binToDec(int(registers[inst[7:10]])) > 65535:
+        registers["111"] = "0000000000001000"
+        registers[inst[7:10]] = "11111111"
+
+
 def sub(inst):
-    registers[inst[7:10]]=dtob(binToDec(int(registers[inst[10:14]]))-binToDec(int(registers[inst[14:]])))
-    if binToDec(int(registers[inst[7:10]]))<0:
-        registers["111"]="0000000000001000"
-        registers[inst[7:10]]="0"
+    registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:14]])) - binToDec(int(registers[inst[14:]])))
+    if binToDec(int(registers[inst[7:10]])) < 0:
+        registers["111"] = "0000000000001000"
+        registers[inst[7:10]] = "0"
+
+
 def mul(inst):
-    registers[inst[7:10]]=dtob(binToDec(int(registers[inst[10:14]]))*binToDec(int(registers[inst[14:]])))
-    if binToDec(int(registers[inst[7:10]]))>255:
-        registers["111"]="0000000000001000"
-        registers[inst[7:10]]="11111111"
-    if binToDec(int(registers[inst[7:10]]))<0:
-        registers["111"]="0000000000001000"
-        registers[inst[7:10]]="0"
-        
+    registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:14]])) * binToDec(int(registers[inst[14:]])))
+    if binToDec(int(registers[inst[7:10]])) > 65535:
+        registers["111"] = "0000000000001000"
+        registers[inst[7:10]] = "11111111"
+    elif binToDec(int(registers[inst[7:10]])) < 0:
+        registers["111"] = "0000000000001000"
+        registers[inst[7:10]] = "0"
+
+
 def xor(inst):
-    registers[inst[7:10]]=dtob(binToDec(int(registers[inst[10:14]]))^binToDec(int(registers[inst[14:]])))
+    registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:14]])) ^ binToDec(int(registers[inst[14:]])))
+
+
 def or1(inst):
-    registers[inst[7:10]]=dtob(binToDec(int(registers[inst[10:14]]))|binToDec(int(registers[inst[14:]])))
+    registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:14]])) | binToDec(int(registers[inst[14:]])))
+
+
 def and1(inst):
-    registers[inst[7:10]]=dtob(binToDec(int(registers[inst[10:14]]))&binToDec(int(registers[inst[14:]])))
+    registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:14]])) & binToDec(int(registers[inst[14:]])))
+
+
 def movr(inst):
-    registers[inst[14:]]=registers[inst[10:14]]
+    registers[inst[14:]] = registers[inst[10:14]]
+
+
 def div(inst):
-    registers["000"]=dtob(binToDec(int(registers[inst[10:14]]))//binToDec(int(registers[inst[14:]])))
-    registers["001"]=dtob(binToDec(int(registers[inst[10:14]]))%binToDec(int(registers[inst[14:]])))
+    registers["000"] = dtob(binToDec(int(registers[inst[10:14]])) // binToDec(int(registers[inst[14:]])))
+    registers["001"] = dtob(binToDec(int(registers[inst[10:14]])) % binToDec(int(registers[inst[14:]])))
+
+
 def not1(inst):
-    registers[inst[14:]]=dtob(~binToDec(int(registers[inst[10:14]])))
+    registers[inst[14:]] = dtob(~binToDec(int(registers[inst[10:14]])))
+
+
 def cmp(inst):
-    if((binToDec(int(registers[inst[10:14]])))>binToDec(int(registers[inst[14:]]))):
-        registers["111"]="0000000000000010"
-    elif((binToDec(int(registers[inst[10:14]])))==binToDec(int(registers[inst[14:]]))):
-        registers["111"]="0000000000000001"
-    elif((binToDec(int(registers[inst[10:14]])))<binToDec(int(registers[inst[14:]]))):
-        registers["111"]="0000000000000100"
+    if ((binToDec(int(registers[inst[10:14]]))) > binToDec(int(registers[inst[14:]]))):
+        registers["111"] = "0000000000000010"
+    elif ((binToDec(int(registers[inst[10:14]]))) == binToDec(int(registers[inst[14:]]))):
+        registers["111"] = "0000000000000001"
+    elif ((binToDec(int(registers[inst[10:14]]))) < binToDec(int(registers[inst[14:]]))):
+        registers["111"] = "0000000000000100"
+
+
+def movi(inst):
+    registers[inst[5:8]] = dtob(binToDec(inst[8:]))
+
+
+def ls(inst):
+    registers["111"] = "0000000000000000"
+    registers[inst[5:8]] = dtob(2 * binToDec(inst[8:]))
+
+
+def rs(inst):
+    registers["111"] = "0000000000000000"
+    registers[inst[5:8]] = dtob(binToDec(inst[8:]) // 2)
+
+
+def ld(inst):
+    registers["111"] = "0000000000000000"  #flag reset
+
+
+def st(inst):
+    registers["111"] = "0000000000000000"
+
+
+def jmp(inst):
+    PC = binToDec(inst[8:])
+    registers["111"] = "0000000000000000"
+
+
+def jgt(inst):
+    if (FLAGS[14] == 1):
+        PC = binToDec(inst[8:])
+    registers["111"] = "0000000000000000"
+
+
+def jlt(inst):
+    if (FLAGS[13] == 1):
+        PC = binToDec(inst[8:])
+    registers["111"] = "0000000000000000"
+
+
+def je(inst):
+    if (FLAGS[15] == 1):
+        PC = binToDec(inst[8:])
+    registers["111"] = "0000000000000000"
+
+
 A = {
     "00000": add,
     "00001": sub,
@@ -77,20 +145,20 @@ A = {
 }
 
 B = {
-    "00010":movi,
-    "01001":ls ,
-    "01000":rs
+    "00010": movi,
+    "01001": ls,
+    "01000": rs
 
 }
 F = {
-    "10011":hlt
+    "10011": hlt
 }
 
 C = {
-    "00011":movr,
-    "00111":div,
-    "01101":not1,
-    "01110":cmp
+    "00011": movr,
+    "00111": div,
+    "01101": not1,
+    "01110": cmp
 }
 
 D = {
@@ -99,40 +167,23 @@ D = {
 }
 
 E = {
-    "01111":jmp ,
-    "10000":jlt ,
-    "10001":jgt ,
-    "10010":je,
+    "01111": jmp,
+    "10000": jlt,
+    "10001": jgt,
+    "10010": je,
 }
-#VALUES IN THE DICTIONARIES ARE THE FUNCTIONS. USE DICT[KEY] TO CALL THE FUNCTION
-
-# def typeA(inst):
-#     A[inst[:5]](inst)
-
-# def typeB(inst):
-
-# def typeC(inst):
-
-# def typeD(inst):
-
-# def typeE(inst):
-
-# def typeF(inst):
-
-# #interpret the registers and the immediate values in each type of instruction above
-
 
 
 def execute(inst):
-    if(inst[:5] in A):
+    if (inst[:5] in A):
         A[inst[:5]](inst)
     if (inst[:5] in B):
-        typeB(inst)
+        B[inst[:5]](inst)
     if (inst[:5] in C):
         C[inst[:5]](inst)
     if (inst[:5] in D):
-        typeD(inst)
+        D[inst[:5]](inst)
     if (inst[:5] in E):
-        typeE(inst)
+        E[inst[:5]](inst)
     if (inst[:5] in F):
-        typeF(inst)
+        exit()
