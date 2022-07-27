@@ -196,6 +196,7 @@ E = {
 
 
 def execute(inst):
+    # print(type(inst))
     if (inst[:5] in A):
         A[inst[:5]](inst)
     if (inst[:5] in B):
@@ -208,3 +209,20 @@ def execute(inst):
         E[inst[:5]](inst)
     if (inst[:5] in F):
         exit()
+
+
+
+l=[
+    "1001000100000100",
+    "1001001000000100",
+    "1011000001010011",
+    "1010101100000110",
+    "1010010000000110",
+    "0101000000000000",
+]
+
+for i in range(len(l)):
+    execute(l[i])
+    print(dtob(PC),registers["000"],registers["001"],registers["010"],registers["011"],registers["100"],registers["101"],registers["110"],registers["111"])
+    PC+=1
+    
