@@ -291,9 +291,8 @@ def dtob2(dec):
     if (len(s) < 8):
         s = (8 - len(s)) * "0" + s
     return s
-x=[]
 y=[0]
-
+x=[]
 halt_flag = 0
 while (halt_flag == 0):
 # for ijk in range(0,50):
@@ -305,12 +304,13 @@ while (halt_flag == 0):
         w.write(dtob2(PC) + " ")
     print(dtob2(PC), end=" ")
     PC = newPC
-    x.append(PC)
+    y.append(PC)
     # print(newPC)
     regprint()
 n=len(y)
 for i in range(1,n+1):
     y.append(i)
+
 memdump()
 
 # l = [
