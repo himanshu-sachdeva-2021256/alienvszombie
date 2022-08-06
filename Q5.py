@@ -6,6 +6,8 @@ bits = 0
 factor = 0
 if ("b" in space[1]):
     bits = 1
+if ("word" in space[1] or "Word" in space[1]):
+    word = 1
 if ("G" in space[1] or "g" in space[1]):
     factor = 3
 if ("M" in space[1] or "m" in space[1]):
@@ -64,14 +66,19 @@ def sysen():
 
         if (bits == 1):
             unique = int(space[0]) * (1024 * factor) / size
+        elif (word == 1):
+            unique = (int(space[0])*int(cpubits[0]) * (1024 ** factor)) / size
         else:
             unique = int(space[0]) * (1024 * factor) * 8 / size
         curr_pins = math.log(unique, 2)
         if (bits == 1):
             u = int(space[0]) * (1024 * factor) / s
+        elif(word==1):
+            u=(int(space[0])*int(cpubits[0]) * (1024 ** factor)) / s
         else:
             u = int(space[0]) * (1024 * factor) * 8 / s
         new_pins = math.log(u, 2)
+        print()
         print(int(new_pins - curr_pins))
     if (t == 2):
         cpubits = input("cpu bits: ").split()

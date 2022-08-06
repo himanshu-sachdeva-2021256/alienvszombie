@@ -1,5 +1,5 @@
 import sys
-
+import matplotlib.pyplot as plt
 R0 = R1 = R2 = R3 = R4 = R5 = R6 = FLAGS = "0000000000000000"
 PC = 0
 newPC = 0
@@ -300,42 +300,27 @@ while (halt_flag == 0):
     if (instruction[:5] == "01010"):
         halt_flag = 1
     execute(instruction)
-    with open("test.txt", "a") as w:
-        w.write(dtob2(PC) + " ")
+    if(instruction[:5] in D):
+        y.append(-binToDec(instruction[8:]))
     print(dtob2(PC), end=" ")
     PC = newPC
     y.append(PC)
     # print(newPC)
     regprint()
 n=len(y)
-for i in range(1,n+1):
-    y.append(i)
+for i in range(n):
+    if y[i]<0:
+        x.append(x[i-1])
+    else:
+        x.append(i)
 
 memdump()
 
-# l = [
-#      "1001000100000100",
-#      "1001001000000100",
-#      "1011000001010011",
-#      "1010101100000110",
-#      "1010010000000110",
-#      "0101000000000000",
-#
-#
-#     "1001000100000101",
-#     "1001000100000101",
-#     "1001000100000101",
-#     "1001000100000101",
-#     "1001000100000101",
-#     "1001000100000101",
-#     "0101000000000000"
+print(len(x),len(y))
 
 
-# ]
-
-
-# for i in range(len(l)):
-#     execute(l[i])
-#     print(dtob2(PC), registers["000"], registers["001"], registers["010"], registers["011"], registers["100"],
-#           registers["101"], registers["110"], registers["111"], sep=" ")
-#     PC = newPC
+for i in range(len(y)):
+    if(y[i]<0):
+        y[i]*=(-1)
+plt.scatter(x, y, c ="blue")
+plt.show()
