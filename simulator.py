@@ -225,6 +225,7 @@ l=[
 
 for i in range(len(l)):
     execute(l[i])
-    print(dtob(PC),registers["000"],registers["001"],registers["010"],registers["011"],registers["100"],registers["101"],registers["110"],registers["111"],sep="  ")
+    print(dtob(PC)[8:],registers["000"],registers["001"],registers["010"],registers["011"],registers["100"],registers["101"],registers["110"],registers["111"],sep="  ")
     PC+=1
+print(dtob(PC)[7:],registers["000"],registers["001"],registers["010"],registers["011"],registers["100"],registers["101"],registers["110"],registers["111"],sep="  ")
     
