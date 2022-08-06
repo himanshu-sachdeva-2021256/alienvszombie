@@ -241,6 +241,7 @@ instruction_list = []
 for line in sys.stdin:
     instruction_list.append(line)
 
+
 mem = instruction_list
 l = len(instruction_list)
 while (l <= 256):
