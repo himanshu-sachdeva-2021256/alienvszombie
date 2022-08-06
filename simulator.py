@@ -308,7 +308,7 @@ while (halt_flag == 0):
     x.append(PC)
     # print(newPC)
     regprint()
-n=len(x)
+n=len(y)
 for i in range(1,n+1):
     y.append(i)
 memdump()
