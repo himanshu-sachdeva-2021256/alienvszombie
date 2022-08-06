@@ -51,9 +51,11 @@ def floatingpoint(num):
     expo,mane=exponent(num)
     # expo,mane=[1,2]
     dec=floattob(dec)
-    print(expo)
-    print(mane)
-    print(dec)
-    return str(expo)+(str(mane[1:])+str(dec))[:5]
+    print(expo[-3:])
+    print((str(mane)+str(dec))[:5])
+    return str(expo)[-3:]+(str(mane[1:])+str(dec))[:5]
     
 print(floatingpoint("1.5"))
+# 111
+# 10000
+
