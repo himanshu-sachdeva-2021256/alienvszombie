@@ -130,16 +130,20 @@ def sub(inst):
 def subf(inst):
     global newPC
     newPC += 1
-    registers[inst[13:16]] =  dtob(floattodecimal(int(registers[inst[7:10]])) - (floattodecimal(int(registers[inst[10:13]]))))
+    # registers[inst[13:16]] =  dtob(floattodecimal(int(registers[inst[7:10]])) - (floattodecimal(int(registers[inst[10:13]]))))
+    num =  dtob(floattodecimal(int(registers[inst[7:10]])) - (floattodecimal(int(registers[inst[10:13]]))))
     # if binToDec(int(registers[inst[13:16]])) < 0:
     #     registers["111"] = "0000000000001000"
     #     registers[inst[13:16]] = "0" * 16
     # else:
     #     registers["111"] = "0" * 16
     if num not in l:
-    # if binToDec(int(registers[inst[13:16]])) > 65535:
         registers["111"] = "0000000000001000"
         registers[inst[13:16]] = "1" * 16
+    if num < l:
+    # if binToDec(int(registers[inst[13:16]])) > 65535:
+        registers["111"] = "0000000000001000"
+        registers[inst[13:16]] = "0" * 16
     else:
         registers["111"] = "0" * 16
         registers[inst[13:16]] = floatingpoint(num)
