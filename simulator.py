@@ -1,5 +1,8 @@
+import sys
+
 R0 = R1 = R2 = R3 = R4 = R5 = R6 = FLAGS = "0000000000000000"
 PC = 0
+newPC=0
 registers = {
     "000": R0,
     "001": R1,
@@ -13,7 +16,7 @@ registers = {
 
 
 def binToDec(binary):
-    binary=int(binary)
+    binary = int(binary)
     decimal = i = 0
     while (binary != 0):
         # print((binary))
@@ -35,64 +38,80 @@ def dtob(dec):
 
 
 def add(inst):
-    registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:13]])) + binToDec(int(registers[inst[13:]])))
-    if binToDec(int(registers[inst[7:10]])) > 65535:
+    registers[inst[13:]] = dtob(binToDec(int(registers[inst[10:13]])) + binToDec(int(registers[inst[7:10]])))
+    if binToDec(int(registers[inst[13:]])) > 65535:
         registers["111"] = "0000000000001000"
-        registers[inst[7:10]] = "1"*16
+        registers[inst[13:]] = "1" * 16
     else:
-        registers["111"] = "0"*16
+        registers["111"] = "0" * 16
 
 
 def sub(inst):
-    registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:13]])) - binToDec(int(registers[inst[13:]])))
-    if binToDec(int(registers[inst[7:10]])) < 0:
+    global newPC
+    newPC += 1
+    registers[inst[13:]] = dtob(binToDec(int(registers[inst[10:13]])) - binToDec(int(registers[inst[7:10]])))
+    if binToDec(int(registers[inst[13:]])) < 0:
         registers["111"] = "0000000000001000"
-        registers[inst[7:10]] = "0"*16
+        registers[inst[13:]] = "0" * 16
     else:
-        registers["111"] = "0"*16
+        registers["111"] = "0" * 16
 
 
 def mul(inst):
-    registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:13]])) * binToDec(int(registers[inst[13:]])))
-    if binToDec(int(registers[inst[7:10]])) > 65535:
+    global newPC
+    newPC += 1
+    registers[inst[13:]] = dtob(binToDec(int(registers[inst[10:13]])) * binToDec(int(registers[inst[7:10]])))
+    if binToDec(int(registers[inst[13:]])) > 65535:
         registers["111"] = "0000000000001000"
-        registers[inst[7:10]] = "1"*16
-    elif binToDec(int(registers[inst[7:10]])) < 0:
+        registers[inst[13:]] = "1" * 16
+    elif binToDec(int(registers[inst[13:]])) < 0:
         registers["111"] = "0000000000001000"
-        registers[inst[7:10]] = "0"*16
+        registers[inst[13:]] = "0" * 16
     else:
-        registers["111"] = "0"*16
+        registers["111"] = "0" * 16
 
 
 def xor(inst):
-    registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:13]])) ^ binToDec(int(registers[inst[13:]])))
-    registers["111"] = "0"*16
+    global newPC
+    newPC += 1
+    registers[inst[13:]] = dtob(binToDec(int(registers[inst[10:13]])) ^ binToDec(int(registers[inst[7:10]])))
+    registers["111"] = "0" * 16
 
 
 def or1(inst):
-    registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:13]])) | binToDec(int(registers[inst[13:]])))
-    registers["111"] = "0"*16
+    global newPC
+    newPC += 1
+    registers[inst[13:]] = dtob(binToDec(int(registers[inst[10:13]])) | binToDec(int(registers[inst[7:10]])))
+    registers["111"] = "0" * 16
 
 
 def and1(inst):
-    registers[inst[7:10]] = dtob(binToDec(int(registers[inst[10:13]])) & binToDec(int(registers[inst[13:]])))
-    registers["111"] = "0"*16
+    global newPC
+    newPC += 1
+    registers[inst[13:]] = dtob(binToDec(int(registers[inst[10:13]])) & binToDec(int(registers[inst[7:10]])))
+    registers["111"] = "0" * 16
 
 
 def movr(inst):
+    global newPC
+    newPC += 1
     registers[inst[13:]] = registers[inst[10:13]]
-    registers["111"] = "0"*16
+    registers["111"] = "0" * 16
 
 
 def div(inst):
+    global newPC
+    newPC += 1
     registers["000"] = dtob(binToDec(int(registers[inst[10:13]])) // binToDec(int(registers[inst[13:]])))
     registers["001"] = dtob(binToDec(int(registers[inst[10:13]])) % binToDec(int(registers[inst[13:]])))
-    registers["111"] = "0"*16
+    registers["111"] = "0" * 16
 
 
 def not1(inst):
+    global newPC
+    newPC += 1
     registers[inst[13:]] = dtob(~binToDec(int(registers[inst[10:13]])))
-    registers["111"] = "0"*16
+    registers["111"] = "0" * 16
 
 
 def cmp(inst):
@@ -105,58 +124,65 @@ def cmp(inst):
 
 
 def movi(inst):
+    global newPC
+    newPC += 1
     registers[inst[5:8]] = dtob(binToDec(inst[8:]))
     registers["111"] = "0" * 16
 
 
 def ls(inst):
+    global newPC
+    newPC += 1
     registers["111"] = "0" * 16
-    registers[inst[5:8]] = dtob(2 * binToDec(inst[8:]))
+    registers[inst[5:8]] = dtob((binToDec(registers[inst[5:]])) * 2 ** binToDec(inst[8:]))
 
 
 def rs(inst):
+    global newPC
+    newPC += 1
     registers["111"] = "0" * 16
-    registers[inst[5:8]] = dtob(binToDec(inst[8:]) // 2)
+    registers[inst[5:8]] = dtob((binToDec(registers[inst[5:]])) // 2 ** binToDec(inst[8:]))
 
 
 def ld(inst):
+    global newPC
+    newPC += 1
+    registers[inst[5:8]] = mem[inst[8:]]
     registers["111"] = "0" * 16
 
 
 def st(inst):
+    global newPC
+    newPC += 1
+    mem[inst[8:]] = registers[inst[5:8]]
     registers["111"] = "0" * 16
 
 
 def jmp(inst):
-    global PC
-    PC = binToDec(inst[8:])
+    global newPC
+    newPC = binToDec(inst[8:])
     registers["111"] = "0" * 16
 
 
 def jgt(inst):
-    global PC
+    global newPC
     if (FLAGS[13] == 1):
-        PC = binToDec(inst[8:])
+        newPC = binToDec(inst[8:])
     registers["111"] = "0" * 16
 
 
 def jlt(inst):
-    global PC
+    global newPC
     if (FLAGS[13] == 1):
-        PC = binToDec(inst[8:])
+        newPC = binToDec(inst[8:])
     registers["111"] = "0" * 16
 
 
 def je(inst):
-    global PC
+    global newPC
     if (FLAGS[15] == 1):
-        PC = binToDec(inst[8:])
+        newPC = binToDec(inst[8:])
     registers["111"] = "0" * 16
-
-
-def hlt():
-    pass
-
 
 A = {
     "10000": add,
@@ -174,7 +200,7 @@ B = {
 
 }
 F = {
-    "01010": hlt
+    "01010": "hlt"
 }
 
 C = {
@@ -209,22 +235,70 @@ def execute(inst):
         D[inst[:5]](inst)
     if (inst[:5] in E):
         E[inst[:5]](inst)
-    if (inst[:5] in F):
-        exit()
 
 
+instruction_list = []
+for line in sys.stdin:
+    instruction_list.append(line)
 
-l=[
-    "1001000100000100",
-    "1001001000000100",
-    "1011000001010011",
-    "1010101100000110",
-    "1010010000000110",
-    "0101000000000000",
-]
+mem = instruction_list
+l = len(instruction_list)
+while (l <= 256):
+    mem.append("0" * 16)
+    l+=1
 
-for i in range(len(l)):
-    execute(l[i])
-    print(dtob(PC),registers["000"],registers["001"],registers["010"],registers["011"],registers["100"],registers["101"],registers["110"],registers["111"],sep="  ")
-    PC+=1
-    
+def regprint():
+    print(registers["000"], registers["001"], registers["010"], registers["011"], registers["100"],
+               registers["101"], registers["110"], registers["111"], sep=" ")
+
+
+def memdump():
+    for i in mem:
+        print(i)
+
+
+def dtob2(dec):
+    s = ""
+    while (dec > 0):
+        s = (str)(dec % 2) + s
+        dec = dec // 2
+    if (len(s) < 8):
+        s = (8 - len(s)) * "0" + s
+    return s
+
+halt_flag = 0
+while (halt_flag == 0):
+    instruction = mem[PC]
+    if(instruction[:5]=="01010"):
+        halt_flag=1
+    execute(instruction)
+    print(dtob2(PC),end=" ")
+    PC=newPC
+    regprint()
+
+memdump()
+
+# l = [
+#      "1001000100000100",
+#      "1001001000000100",
+#      "1011000001010011",
+#      "1010101100000110",
+#      "1010010000000110",
+#      "0101000000000000",
+#
+#
+#     "1001000100000101",
+#     "1001000100000101",
+#     "1001000100000101",
+#     "1001000100000101",
+#     "1001000100000101",
+#     "1001000100000101",
+#     "0101000000000000"
+# ]
+
+
+# for i in range(len(l)):
+#     execute(l[i])
+#     print(dtob2(PC), registers["000"], registers["001"], registers["010"], registers["011"], registers["100"],
+#           registers["101"], registers["110"], registers["111"], sep=" ")
+#     PC = newPC
