@@ -1,1 +1,1 @@
-regis
+.split(".")
