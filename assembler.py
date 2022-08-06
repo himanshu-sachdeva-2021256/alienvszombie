@@ -17,42 +17,41 @@ registers = {
 }
 
 A = {
-    "add": "00000",
-    "sub": "00001",
-    "mul": "00110",
-    "xor": "01010",
-    "or": "01011",
-    "and": "01100"
+    "add": "10000",
+    "sub": "10001",
+    "mul": "10110",
+    "xor": "11010",
+    "or": "11011",
+    "and": "11100"
 }
 B = {
-    "mov": "00010",
-    "ls": "01001",
-    "rs": "01000"
+    "mov": "10010",
+    "ls": "11001",
+    "rs": "11000"
 
 }
 F = {
-    "hlt": "10011"
+    "hlt": "01010"
 }
 
 C = {
-    "mov": "00011",
-    "div": "00111",
-    "not": "01101",
-    "cmp": "01110"
+    "mov": "10011",
+    "div": "10111",
+    "not": "11101",
+    "cmp": "11110"
 }
 
 D = {
-    "ld": "00100",
-    "st": "00101",
+    "ld": "10100",
+    "st": "10101",
 }
 
 E = {
-    "jmp": "01111",
-    "jlt": "10000",
-    "jgt": "10001",
-    "je": "10010",
+    "jmp": "11111",
+    "jlt": "01100",
+    "jgt": "01101",
+    "je": "01111",
 }
-
 
 def dtob(dec):
     dec=int(dec)
@@ -239,6 +238,7 @@ with open("file.txt", "r") as f:
             #     print("Illegal Use of Labeles")
             if (s[0][:-1] in var_list):
                 print("Lable name same as variable")
+                exit()
             else:
                 labels[s[0][:-1]]=dtob(line_count-len(var_list)-1)
                 label_count += 1
@@ -257,28 +257,7 @@ with open("file.txt", "r") as f:
         if i== '\n':
             continue
         s = i.split()
-        # l.append(s)
-        # line_count += 1
-
-        # if (s[0] == "var"):
-        #     if variable_flag_check == 1:
-        #         print("VARIABLE DECLARATION NOT AT BEGINING")
-        #     elif (len(var_list) > 2 ** 8):
-        #         print("TOO MANY VARIABLES")
-        #     else:
-        #         var_list[s[1]] = ["0", 0]  # [address,value] of variable
-        #         var_count += 1
-
-        # elif (":" in i):
-        #     # if (len(s)!=1):
-        #     #     print("Illegal Use of Labeles")
-        #     if (s[0][:-1] in var_list):
-        #         print("Lable name same as variable")
-        #     else:
-        #         labels[s[0][:-1]]=dtob(line_count-1)
-        #         label_count += 1
-        #         l.pop()
-        #         l.append(s[1:])
+     
 
         if ("FLAGS" in i):
             if s[0]!="mov":
@@ -287,7 +266,7 @@ with open("file.txt", "r") as f:
             elif len(s)!=3:
                 print("Illegal use of flag")
                 exit()
-            elif s[2]!="FLAGS" or s[1] not in registers:
+            elif s[1]!="FLAGS" or s[2] not in registers:
                 print("Illegal use of flag")
                 exit()
             
@@ -346,4 +325,3 @@ with open("file.txt", "r") as f:
 with open("binary.txt","r") as f:
     k=f.read()
     sys.stdout.write(k)
-#hi
