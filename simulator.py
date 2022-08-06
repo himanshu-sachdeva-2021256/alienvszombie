@@ -38,6 +38,8 @@ def dtob(dec):
 
 
 def add(inst):
+    global newPC
+    newPC+=1
     registers[inst[13:]] = dtob(binToDec(int(registers[inst[10:13]])) + binToDec(int(registers[inst[7:10]])))
     if binToDec(int(registers[inst[13:]])) > 65535:
         registers["111"] = "0000000000001000"
