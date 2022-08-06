@@ -242,6 +242,8 @@ def execute(inst):
 instruction_list = []
 for line in sys.stdin:
     instruction_list.append(line)
+    if line == '' or line == '\n':
+        break
 
 
 mem = instruction_list
