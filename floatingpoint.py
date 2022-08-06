@@ -23,7 +23,6 @@ def dtob(dec):
 def floattob(dec):
     final=""
     for i in range(5):
-        print(dec)
         dec=float("0."+str(dec))
         dec=float(dec)
         dec=dec*2
@@ -31,6 +30,17 @@ def floattob(dec):
         dec=str(dec)[2:]
     return final
 
+def btofloat(binary):
+    decimal = 0
+    i=1
+    while (binary != 0):
+        # print("#"+str(binary), end=" ")
+        dec=int(str(binary)[0])
+        decimal = decimal + dec * (0.5 ** i)
+        i += 1
+        binary = int(str(binary)[1:])
+        # print("#"+str(binary))
+    return decimal    
 
 def exponent(num):
     num=int(num.split(".")[0])
@@ -38,24 +48,31 @@ def exponent(num):
     for i in range(len(l)):
         if l[i]=="1":
             break
-
-    # print(l[i:])
     expo=3+len(l[i:])-1
-    # print(l)
+
     return [dtob(expo)[-8:],l[i:]]
 
 def floatingpoint(num):
     dec=int(num.split(".")[1])
-    # num=int(num.split(".")[0])
-    print("---",num)
     expo,mane=exponent(num)
-    # expo,mane=[1,2]
     dec=floattob(dec)
-    print(expo[-3:])
-    print((str(mane)+str(dec))[:5])
+    # print(expo[-3:])
+    # print((str(mane)+str(dec))[:5])
     return str(expo)[-3:]+(str(mane[1:])+str(dec))[:5]
     
-print(floatingpoint("1.5"))
-# 111
-# 10000
+def floattodecimal(num):
+    expo=num[:3]
+    mane=num[3:]
+    # print(expo)
+    # print(mane)
+    i=binToDec(expo)-3
+    # print(i)
+    dexpo=(binToDec("1"+mane[:i]))
+    dmane=(btofloat(mane[i:]))
+    return (float(dexpo)+float(dmane))
 
+print(floatingpoint("1.5"))
+print("!!")
+
+# check statement
+print(floattodecimal(floatingpoint("5.25")))
