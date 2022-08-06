@@ -51,7 +51,7 @@ def add(inst):
 def sub(inst):
     global newPC
     newPC += 1
-    registers[inst[13:16]] = dtob(binToDec(int(registers[inst[10:13]])) - binToDec(int(registers[inst[7:10]])))
+    registers[inst[13:16]] =  dtob(binToDec(int(registers[inst[7:10]])) - (binToDec(int(registers[inst[10:13]]))))
     if binToDec(int(registers[inst[13:16]])) < 0:
         registers["111"] = "0000000000001000"
         registers[inst[13:16]] = "0" * 16
@@ -122,8 +122,10 @@ def cmp1(inst):
     if ((binToDec(int(registers[inst[10:13]]))) > binToDec(int(registers[inst[13:16]]))):
         registers["111"] = "0000000000000010"
     elif ((binToDec(int(registers[inst[10:13]]))) == binToDec(int(registers[inst[13:16]]))):
+        # print(binToDec(int(registers[inst[10:13]])),binToDec(int(registers[inst[13:16]])))
         registers["111"] = "0000000000000001"
     elif ((binToDec(int(registers[inst[10:13]]))) < binToDec(int(registers[inst[13:16]]))):
+        # print(binToDec(int(registers[inst[10:13]])),binToDec(int(registers[inst[13:16]])))
         registers["111"] = "0000000000000100"
 
 
@@ -172,20 +174,28 @@ def jgt(inst):
     global newPC
     if (registers["111"] == "0000000000000010"):
         newPC = binToDec(inst[8:])
+    else:
+        newPC+=1
     registers["111"] = "0" * 16
 
 
 def jlt(inst):
     global newPC
+    # print("heello",newPC)
     if (registers["111"] == "0000000000000100"):
         newPC = binToDec(inst[8:])
+    else:
+        newPC+=1
     registers["111"] = "0" * 16
-
+    # print(newPC)
+    # exit()
 
 def je(inst):
     global newPC
-    if (registers["111"][-1] == "0000000000000001"):
+    if (registers["111"] == "0000000000000001"):
         newPC = binToDec(inst[8:])
+    else:
+        newPC+=1
     registers["111"] = "0" * 16
 
 
@@ -229,7 +239,8 @@ E = {
 
 
 def execute(inst):
-    # print(type(inst))
+    # 
+    # (type(inst))
     if (inst[:5] in A):
         A[inst[:5]](inst)
     if (inst[:5] in B):
@@ -248,13 +259,13 @@ with open("test.txt", "w") as w:
 instruction_list = []
 
 for line in sys.stdin:
-    if line == ' ' or line == '\n':
+    if line == '' or line == '\n':
         break
     instruction_list.append(line.strip())
 
 mem = instruction_list
 l = len(instruction_list)
-while (l <= 256):
+while (l < 256):
     mem.append("0" * 16)
     l += 1
 
@@ -284,6 +295,7 @@ def dtob2(dec):
 
 halt_flag = 0
 while (halt_flag == 0):
+# for ijk in range(0,50):
     instruction = mem[PC]
     if (instruction[:5] == "01010"):
         halt_flag = 1
@@ -292,6 +304,7 @@ while (halt_flag == 0):
         w.write(dtob2(PC) + " ")
     print(dtob2(PC), end=" ")
     PC = newPC
+    # print(newPC)
     regprint()
 
 memdump()

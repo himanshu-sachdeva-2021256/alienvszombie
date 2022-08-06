@@ -75,4 +75,4 @@ print(floatingpoint("1.5"))
 print("!!")
 
 # check statement
-print(floattodecimal(floatingpoint("5.25")))
+print(floattodecimal(floatingpoint("6.75")))
